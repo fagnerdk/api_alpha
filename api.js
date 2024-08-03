@@ -93,6 +93,25 @@ con.connect(function (err){
 
 })
 
+
+/** */
+
+app.get("/image", (req, res) => {
+  
+  con.connect(function (err) {
+    if (err) {
+      throw err;
+    }
+    
+
+    var sql = `INSERT INTO postagen (foto) VALUES ('${req.query.foto}')`;
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log("1 record inserted");
+    });
+  });
+});
+
 app.listen(process.env.PORT || 3000, () => console.log("api ligada"));
  //SELECT * FROM usuario_loguin join postagen on postagen.id = usuario_loguin.cusopreferido
 

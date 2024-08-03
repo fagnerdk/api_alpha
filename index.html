@@ -11,11 +11,13 @@
 
 <body>
 
-  <form action="http://localhost:3000/kaio2?" method="get">
-    <label for="testo1" class="l_msg">mesagem</label>
-    <input type="text" name="mesagen" class="msg">
-    <button class="butao_msg" onclick="showHint()">ok</button>
-    <button class="butao_msg0" id="01" onclick="mydelete()">delete</button>
+  <form method="get"  accept="http://localhost:3000/image">
+   <!--<label for="testo1" class="l_msg">mesagem</label>
+    <input type="text" name="mesagen" class="msg" id="uu">-->
+
+    <input type="file" name="foto" id="foto">
+    <button class="butao_msg" type="submit">ok</button>
+    
   </form>
 
   <div id="caixa_criar">
@@ -24,7 +26,7 @@
     <form action="http://localhost:3000/criaconta?" method="get" >
       <div class="nome_usuario">
         <label for="nome">Nome</label>
-        <input type="text" name="meesagen" id="nome" placeholder="Nome">
+        <input type="text" name="nome" id="nome" placeholder="Nome">
       </div>
 
       <div class="email_0">
@@ -41,7 +43,7 @@
         <label for="senha">senha</label>
         <input type="password" name="senha" id="senha" placeholder="senha">
       </div>
-
+       
       <button class="btn_0" >cria conta</button>
 
     </form>
