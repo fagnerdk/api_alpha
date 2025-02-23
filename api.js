@@ -1,35 +1,34 @@
 
-import { con } from "./mysql.js";
 
- import express from "express";
+ const con = require("./mysql.js")
+ const express = require ('express')
+ const socketIO = require('socket.io')
+ const http = require('http')
 
-const app = express();
-
-import parser from "body-parser";
-import fs from 'fs'
-import cons from 'cors'
+ const app = express()
+ const server = http.createServer(app)
+ const io = socketIO(server,{cors:{origin:"*"}})
 
 
+ app.use(express.static('public'))
 
-const urlencodedpase = parser.urlencoded({ extended: false });
+io.on('connection',(socket)=>{
+  console.log("connect")
 
-app.use(express.json());
-var arry =[]
+  socket.on("message",(message)=>{
+   console.log(message)
+   io.emit('message', ` ${message}`)//${socket.id.substr(0,2)}
+  })
+})
 
-arry.push({ pl: 'oo' });
-app.options("/kaio3",cons())
 
-app.get("/kaio", cons(),(req, res) => res.json(arry));
 
-app.get("/kaio2", (req, res) => {
+
+app.get("/mesagen_enviada!", (req, res) => {
   
   res.send(req.query.mesagen);
-  const obj = req.query.mesagen; 
-  arry.push({ pl: obj });
-
-  fs.writeFile("obj.json", JSON.stringify(obj, null, 2), (err) => {})
   
-  con.connect(function (err) {
+    con.connect(function (err) {
     if (err) {
       throw err;
     }
@@ -38,10 +37,29 @@ app.get("/kaio2", (req, res) => {
     var sql = `INSERT INTO postagen (mesagen) VALUES ('${req.query.mesagen}')`;
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("1 record inserted");
+      console.log("1 uma mesagen enviada com sucesso!");
     });
   });
-});
+
+  })
+ 
+
+
+
+/*lista de mesagen*/
+con.connect(function (err){
+  if(err) {throw err}
+  con.query("SELECT * FROM postagen", function (err, result, fields) {
+    if (err) throw err;
+    
+      
+    app.get('/lista_mesagen',(req, res)=>{res.json(result)})
+      
+
+   
+  });
+ 
+})
 
 /*cria conta usuario */
 app.get("/criaconta", (req, res) => {
@@ -57,35 +75,21 @@ app.get("/criaconta", (req, res) => {
     var sql = `INSERT INTO usuario_loguin (nome,email,telefone,senha) VALUES ('${req.query.nome}','${req.query.email}','${req.query.telefone}','${req.query.senha}')`;
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("1 record inserted");
+      console.log("1 uma conta criada com sucesso!");
     });
   });
 });
 
 
 
-con.connect(function (err){
-  if(err) {throw err}
-  con.query("SELECT * FROM postagen", function (err, result, fields) {
-    if (err) throw err;
-    
-      
-    app.get('/kaio3',cons(), (req, res)=>{res.json(result)})
-      
-
-   
-  });
- 
-})
-
-
+/*lista de usuario*/
 con.connect(function (err){
   
   con.query("SELECT * FROM usuario_loguin", function (err, result, fields) {
     if (err) throw err;
     
       
-    app.get('/usuario',cons(), (req, res)=>{res.json(result)})
+    app.get('/lista_usuario',(req, res)=>{res.json(result)})
       
 
    
@@ -96,7 +100,7 @@ con.connect(function (err){
 
 /** */
 
-app.get("/image", (req, res) => {
+/*app.get("/image", (req, res) => {
   
   con.connect(function (err) {
     if (err) {
@@ -110,10 +114,30 @@ app.get("/image", (req, res) => {
       console.log("1 record inserted");
     });
   });
-});
+});*/
 
-app.listen(process.env.PORT || 3000, () => console.log("api ligada"));
+
+
+
+server.listen(process.env.PORT || 3009, () => console.log("api ligada"));
+ 
+
+
+
  //SELECT * FROM usuario_loguin join postagen on postagen.id = usuario_loguin.cusopreferido
 
  
+  
+
+
+
+  /*
+var arry =[]
+
+arry.push({ pl: 'oo' });
+app.options("/kaio3",cons())
+
+
+app.get("/kaio", cons(),(req, res) => res.json(arry));
+const obj = req.query.mesagen; */
   

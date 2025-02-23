@@ -1,10 +1,22 @@
-var form = document.getElementById('form0')
-var iput = document.getElementById('uu')
-form.addEventListener('submit',(e)=>{
 
-   form.action=`http://localhost:3000/kaio2?=${iput.value}` 
-   console.log(iput.value)
-    e.preventDefault()
+const http =require ('http').createServer();
 
 
+
+const io = require('socket.io')(http,{
+	cors:{origin:"*"}
+});
+
+
+
+io.on('connection',(socket)=>{
+	console.log('connection')
+
+	socket.on("message",(message)=>{
+		console.log(message)
+		io.emit('message', `${socket.id.substr(0,2)} said ${message}`)
+	})
 })
+
+
+http.listen(8080,()=>{console.log('connection pot:8080')})

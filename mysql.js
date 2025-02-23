@@ -1,11 +1,14 @@
-import mysql from 'mysql2';
-var con = mysql.createConnection({
+const Pool =require('pg') ;
+const cret= Pool.Pool
+const con = new cret({
 
   host: "localhost",
-  user: "root",
+  user: "postgres",
+  port:5432,
   password: "Fagner1994@",
-  port:3306,
-  database: "alph_wallet"
+   database: "alph_wallet"
+ 
+  
   
 });
 
@@ -18,5 +21,5 @@ con.connect(function (err) {
 
 });
 
-export {con}
+module.exports = con
 
