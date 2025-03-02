@@ -4,6 +4,7 @@
  const express = require ('express')
  const socketIO = require('socket.io')
  const http = require('http')
+ const cons = require ('cors')
 
  const app = express()
  const server = http.createServer(app)
@@ -13,36 +14,34 @@
  app.use(express.static('public'))
 
 io.on('connection',(socket)=>{
-  console.log("connect")
+  //console.log("connect"+':'+socket.id)
 
   socket.on("message",(message)=>{
-   console.log(message)
-   io.emit('message', ` ${message}`)//${socket.id.substr(0,2)}
-  })
-})
+   console.log(socket.id+' '+message)
+   socket.emit('message', ` ${message}`)
 
-
-
-
-app.get("/mesagen_enviada!", (req, res) => {
-  
-  res.send(req.query.mesagen);
-  
-    con.connect(function (err) {
+   //banco de dado
+     con.connect(function (err) {
     if (err) {
       throw err;
     }
     
 
-    var sql = `INSERT INTO postagen (mesagen) VALUES ('${req.query.mesagen}')`;
+    var sql = `INSERT INTO postagen (mesagen) VALUES ('${message}')`;
     con.query(sql, function (err, result) {
       if (err) throw err;
       console.log("1 uma mesagen enviada com sucesso!");
     });
   });
+   //banco de dado
 
   })
- 
+
+   socket.on('disconnect', () => {
+    console.log('desconectado');
+  });
+})
+
 
 
 
@@ -53,7 +52,7 @@ con.connect(function (err){
     if (err) throw err;
     
       
-    app.get('/lista_mesagen',(req, res)=>{res.json(result)})
+    app.get('/lista_mesagen',cons(),(req, res)=>{res.json(result)})
       
 
    
@@ -62,7 +61,7 @@ con.connect(function (err){
 })
 
 /*cria conta usuario */
-app.get("/criaconta", (req, res) => {
+app.get("/criaconta",cons(),(req, res) => {
   
   
   
@@ -89,7 +88,7 @@ con.connect(function (err){
     if (err) throw err;
     
       
-    app.get('/lista_usuario',(req, res)=>{res.json(result)})
+    app.get('/lista_usuario',cons(),(req, res)=>{res.json(result)})
       
 
    
